@@ -1,0 +1,57 @@
+{% extends 'base_admin.html' %}
+<html>
+    <body>
+        {% block content %}
+            <br><br>
+            <div class="container  rounded">
+                <h3><u>Change the theam of this website for your machine</u></h3>
+                <div class="row p-1">
+                    <div class="col col-lg-6 p-2">
+                        Choose color for background:
+                    </div>
+                    <div class="col col-lg-6 p-2">
+                        <input type="color" id="backcolor" value="#FFA07A" onchange="changeColor()">
+                    </div>
+                </div>
+                <div class="row p-1">
+                    <div class="col col-lg-6 p-2">
+                        Choose color for text:
+                    </div>
+                    <div class="col col-lg-6 p-2">
+                        <input type="color" id="textcolor" value="#800000" onchange="changeColor()">
+                    </div>
+                </div>
+                <div class="row p-1">
+                    <div class="col col-lg-6 p-2">
+                        <button class="btn btn-primary" onclick="setToDefault()" >Set to default</button>
+                    </div>
+                </div>
+            </div>
+            <script>
+                document.getElementById("backcolor").value = localStorage.getItem("background-color"); 
+                document.getElementById("textcolor").value = localStorage.getItem("text-color");
+                function changeColor()
+                {
+                    var background=document.getElementById("backcolor").value;
+                    var text=document.getElementById("textcolor").value;
+
+                    console.log("background",background);
+                    console.log("text",text);
+
+                    if(background != "#FFA07A")
+                        localStorage.setItem("background-color",background);
+                    if(text != "#800000")
+                        localStorage.setItem("text-color",text);
+                    setColorToCss();
+                }
+                function setToDefault()
+                {
+                    localStorage.setItem("background-color","#FFA07A");
+                    localStorage.setItem("text-color","#800000");
+                    setColorToCss()
+                    alert("Theam is set to default...!!");
+                }
+            </script>
+        {% endblock %}
+    </body>
+</html>

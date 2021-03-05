@@ -1,0 +1,74 @@
+{% extends 'base_admin.html' %}
+<html>
+    <head> 
+    </head>
+    <body>
+        {% block content %}
+            <br><br>
+            <div class="container w-50 border rounded">
+                {% if status %}
+                    <center><h2>{{status}} successfully......</h2></center>
+                {% endif %}
+                <br>
+                <form action="/administrator/add_movie/" method="post" enctype="multipart/form-data">{% csrf_token %}
+                    <div class="row form-group justify-content-center">
+                            <h3>Add new amazing movie <i class="fas fa-film fa-1x"></i></h3>
+                    </div>
+                    <div class="row form-group justify-content-center">
+                        <div class="col col-lg-4 align-self-center">
+                            <center>Name</center>
+                        </div>
+                        <div class="col col-lg-8 align-self-center">
+                            <input type="text" class="form-control" name="name">
+                        </div>
+                    </div>
+                    <div class="row form-group justify-content-center">
+                        <div class="col col-lg-4 align-self-center">
+                            <center>Released date</center>
+                        </div>
+                        <div class="col col-lg-8 align-self-center">
+                            <input type="date" class="form-control" name="releaseddate">
+                        </div>
+                    </div>
+                    <div class="row form-group justify-content-center">
+                        <div class="col col-lg-4 align-self-center">
+                            <center>Production</center>
+                        </div>
+                        <div class="col col-lg-8 align-self-center">
+                            <input type="text" class="form-control" name="production">
+                        </div>
+                    </div>
+                    <div class="row form-group justify-content-center">
+                        <div class="col col-lg-4 align-self-center">
+                            <center>Duration</center>
+                        </div>
+                        <div class="col col-lg-8 align-self-center">
+                            <input type="time" class="form-control" name="duration">
+                        </div>
+                    </div>
+                    <div class="row form-group justify-content-center">
+                        <div class="col col-lg-4 align-self-center">
+                            <center>Plot</center>
+                        </div>
+                        <div class="col col-lg-8 align-self-center">
+                            <textarea class="form-control" id="plot" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="row form-group justify-content-center">
+                        <div class="col col-lg-4 align-self-center">
+                            <center>Image</center>
+                        </div>
+                        <div class="col col-lg-8 align-self-center">
+                            <input type="file" name="image" class="form-control-file" accept="image/png , image/jpeg" required>
+                        </div>
+                    </div>
+                    <div class="row form-group justify-content-center">
+                        <div class="col col-lg-6 align-self-center">
+                            <input type="submit" class="btn btn-success form-control" name="Submit">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        {% endblock %}
+    </body>
+</html>
