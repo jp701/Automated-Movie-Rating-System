@@ -6,6 +6,8 @@ class User(models.Model):
     name=models.CharField(max_length=30)
     email=models.CharField(max_length=254)
     password=models.CharField(max_length=128)
+    bio =models.TextField(null=True)
+    image =models.ImageField(upload_to="images",default='images/profile.png')
     
 class Movie(models.Model):
     ID=models.IntegerField(auto_created=True,primary_key=True)
