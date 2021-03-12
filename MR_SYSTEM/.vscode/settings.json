@@ -1,0 +1,4 @@
+{
+    "python.pythonPath": "/usr/bin/python3",
+    "db.sqlite3": "/usr/bin/sqlite3",
+}

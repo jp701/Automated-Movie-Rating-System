@@ -1,0 +1,118 @@
+{% extends 'base_user.html' %}
+{% load mathfilters %}
+<html>
+    <head></head>
+    <body>
+        {% block content %}
+        <br>
+        <div class="container w-75">
+            <br>
+            <div class="card">
+                <div class="card-header">
+                    {{movie.name}}
+                </div>
+                <div class="card-body">
+                    <div class="row form-group justify-content-center">
+                        <div class="col col-lg-4 align-self-center">
+                            <img class="card-img-top" alt="No image is available" src="{{movie.image.url}}" style="width:250px;height:300px">
+                        </div>
+                        <div class="col col-lg-8 align-self-center">
+                            <div class="row form-group justify-content-center">
+                                <div class="col col-lg-4 align-self-center">
+                                    <center>Released date</center>
+                                </div>
+                                <div class="col col-lg-8 align-self-center">
+                                    {{movie.releasedDate}}
+                                </div>
+                            </div>
+                            <div class="row form-group justify-content-center">
+                                <div class="col col-lg-4 align-self-center">
+                                    <center>Production</center>
+                                </div>
+                                <div class="col col-lg-8 align-self-center">
+                                    {{movie.production}}
+                                </div>
+                            </div>
+                            <div class="row form-group justify-content-center">
+                                <div class="col col-lg-4 align-self-center">
+                                    <center>Duration</center>
+                                </div>
+                                <div class="col col-lg-8 align-self-center">
+                                    {{movie.duration}}
+                                </div>
+                            </div>
+                            <div class="row form-group justify-content-center">
+                                <div class="col col-lg-4 align-self-center">
+                                    <center>Plot</center>
+                                </div>
+                                <div class="col col-lg-8 align-self-center">
+                                    <textarea class="form-control" name="plot" rows="3" readonly>
+                                        {{movie.plot}}
+                                    </textarea>
+                                </div>
+                            </div>
+                            <div class="row form-group justify-content-center">
+                                <div class="col col-lg-4 align-self-center">
+                                    <center>Rating</center>
+                                </div>
+                                <div class="col col-lg-8 align-self-center">
+                                    {{movie.rating}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row form-group ml-3"><h4><b>Reviews</b></h4></div>
+                    <div class="row form-group ml-3">
+                        {% if reviews %}
+
+                            {% for review in reviews %}
+                                {% if review.uid.id == currentuserid %}
+                                    <div class="bg-light m-2 float-right">
+                                        <i class="fas fa-star" style="color:yellow;"></i> {{review.rating|add:0}} / 5 <br>
+                                        <span>
+                                            <h4>
+                                                {{review.uid.name}} <small><i>Reviewed on {{review.dateTime}}</i></small>
+                                            </h4>
+                                        </span>
+                                        <h6>{{review.reviewText}}</h6>
+                                    </div>
+                                {% else %}
+                                    <div class="bg-light m-2">
+                                        <span>
+                                            <h4>
+                                                {{review.uid.name}} <small><i>Reviewed on {{review.dateTime}}</i></small>
+                                            </h4>
+                                        </span>
+                                        <h6>{{review.reviewText}}</h6>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </div>            
+                    <form action="/user/calculateRating/" method="post">{% csrf_token %}
+                        <div class="input-group">
+                            <input type="hidden" value="{{movie.ID}}" name="movieid">
+                            <input type="text" name="reviewText" class="form-control border border-right-0 rounded-pill-left" placeholder="Enter your review here.." style="border-top-left-radius: 16px;border-bottom-left-radius:16px;">
+                            <div class="input-group-append">
+                              <button class="btn btn-outline-primary border border-left-0 rounded-pill-right" type="submit" style="border-top-right-radius: 16px;border-bottom-right-radius:16px;">
+                                <i class="fas fa-plus"></i>
+                              </button>
+                            </div>
+                          </div>
+                    </form>
+                </div>
+                <div class="card-footer">
+                    <div class="row justify-content-center">
+                        <div class="col col-lg-2 border">
+                            <a href="/user/user_home/" class="btn btn-secondary w-100">
+                                <i class="fas fa-arrow-circle-left"></i> Back
+                            </a>
+                        </div>                       
+                    </div>
+                </div>
+            </div>
+            <br>
+        </div>
+        {% endblock %}
+    </body>
+</html>

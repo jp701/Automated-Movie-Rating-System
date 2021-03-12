@@ -1,0 +1,268 @@
+{% extends 'base_admin.html' %}
+<html>
+       <!--<script src="bootstrap/jquery-3.5.1.slim.min.js"></script>
+        <script src="bootstrap/popper.min.js"></script><script src="bootstrap/bootstrap.min.js"></script>-->
+    <body>
+        {% block content %}
+            <br>
+            <div class="container" height="40vw">
+                <br>
+                <center><h3>Welcome Admin</h3></center>
+                <br>                
+                <div>
+                    <select name="dropdown" id="chooseContainer" onchange="addContainer()">
+                        <option value="-1">----Select movies to be displayed----</option>
+                    </select>
+                </div>
+                <br>
+                <div class="container" id="mc" height="40vw">
+                </div>
+            </div>
+            <script>
+                initial1();
+                function initial1(){
+                    localStorage.setItem("background-color","#FFA07A");
+                    localStorage.setItem("text-color","#800000");
+                }
+
+                var charts,canvas,chTitle;
+                var i,c,data,movielist;
+                var ctx, mychart,firstmoviename;
+                
+                window.chartColors = {
+                    red: 'rgb(255, 99, 132)',
+                    //orange: 'rgb(255, 159, 64)',
+                    orange:'rgb(255,174,80)',
+                    yellow: 'rgb(255, 205, 86)',
+                    //green: 'rgb(75, 192, 192)',
+                    green:'rgb(51,242,70)',
+                    blue: 'rgb(54, 162, 235)',
+                    purple: 'rgb(153, 102, 255)',
+                    grey: 'rgb(201, 203, 207)',
+                  };
+                var config = {
+                    type: 'pie',
+                    data: {
+                        datasets: [{
+                            data: [
+                                60,60,60,60,60
+                            ],
+                            backgroundColor: [
+                                window.chartColors.red,
+                                window.chartColors.yellow,
+                                window.chartColors.blue,
+                                window.chartColors.purple,
+                                window.chartColors.green,
+                            ],
+                            label: 'Dataset 1'
+                        }],
+                        labels: [
+                            '1 Star',
+                            '2 Star',
+                            '3 Star',
+                            '4 Star',
+                            '5 Star',
+                        ]
+                    },
+                    options: {
+                        tooltips: {enabled: false},
+                        responsive: true
+                    }
+                };
+
+                //initial();          //Only run for the first time
+                window.onload =init;
+                function initial()
+                {
+                    firstmoviename = JSON.parse("{{firstmoviename|escapejs}}");
+                    firstdatalist = JSON.parse("{{firstdatalist|escapejs}}");
+                    charts = ["C1"];
+                    canvas = ["canvas1"];
+                    chTitle = [firstmoviename];
+                    chartData = firstdatalist;
+                    localStorage.setItem("charts", JSON.stringify(charts));
+                    localStorage.setItem("canvas", JSON.stringify(canvas));
+                    localStorage.setItem("chartTitle",JSON.stringify(chTitle));
+                }
+                function init()
+                {
+                    chartData = JSON.parse("{{chartData|escapejs}}");
+                    movielist = JSON.parse("{{movielist|escapejs}}");
+                    charts = JSON.parse(localStorage.getItem("charts"));
+                    canvas = JSON.parse(localStorage.getItem("canvas"));
+                    chTitle = JSON.parse(localStorage.getItem("chartTitle"));
+                    var temp1,temp2,temp3;
+                    //console.log("length: "+charts.length);
+                    //console.log("chartdata: "+chartData);
+                    //config.data.datasets[0].data = chartData[0];
+                    generateMenu(movielist);
+                    var j;
+                    for(j=0;j<charts.length;j++)
+                    {
+                        temp2 = canvas[j];
+                        //console.log(temp2);
+                        temp1 = chTitle[j];
+                        //console.log(temp1);
+                        temp3 = chartData[j];
+                        chartContainerCreation(temp1,(j+1));
+                        canvasCreation(temp2,temp3);
+                    }
+                }
+                function generateMenu(mlist){
+                    var selectMenu = document.getElementById("chooseContainer");
+
+                    var i;
+                    for(i=0;i<mlist.length;i++)
+                    {
+                        var option = document.createElement('option');
+                        //console.log(mlist[i]);
+                        option.setAttribute("value",mlist[i]);
+                        option.innerText = mlist[i];
+                        selectMenu.appendChild(option);
+                    }
+                }
+                function canvasCreation(canvasId,list)
+                {
+                    //console.log("canvasCreation: "+canvasId)
+                    //console.log(list);
+                    ctx = document.getElementById(canvasId).getContext('2d');
+                    //window.myPie = new Chart(ctx, config);
+                    mychart = new Chart(ctx, config);
+                    //console.log(list);
+                    mychart.data.datasets[0].data = list;
+                    //console.log(mychart);
+                    mychart.update('active');
+                    //console.log(mychart.data.datasets.data);
+                    /*mychart.render({
+                        duration: 800,
+                        lazy: false,
+                        easing: 'easeOutBounce'
+                    });*/
+                    mychart.render();
+                    //console.log(mychart);
+                    //config.data.datasets[0].data = list;
+                    //console.log(config);
+                }
+                function HideDiv(e) {
+                    var atr,idx;
+                    atr = e.getAttribute("data-target");    //Getting data-target means ID of chart container
+                    atr = atr.substring(1);                 //Removing first charcter #
+
+                    idx = charts.findIndex(e=> e == atr);
+
+                    //console.log(atr);
+                    //console.log(idx);
+                    con = document.getElementById(atr);       //Getting reference to main chart container
+                    while (con.firstChild) {
+                        con.removeChild(con.firstChild);
+                    }
+                    mc = document.getElementById("mc");
+                    mc.removeChild(con);
+                    /*localStorage.setItem(atr,"none");
+                    c.style.display = localStorage.getItem(atr);*/    //Set its display property to None
+
+                    charts.splice(idx,1);
+                    canvas.splice(idx,1);
+                    chTitle.splice(idx,1);
+                    localStorage.setItem("charts", JSON.stringify(charts));
+                    localStorage.setItem("canvas", JSON.stringify(canvas));
+                    localStorage.setItem("chartTitle", JSON.stringify(chTitle));
+                    alert("You can add it from dropdown.");
+                 }
+            
+                var container,row,col1,h3,col2,button,cvs,i,br,mc,chooseContainer;
+                var newchartname;
+                function chartContainerCreation(chartTitle,idx){
+
+                    //console.log(idx);
+                    //console.log("chartContainerCreation: "+chartTitle);
+                    container = document.createElement('div');
+                    container.classList.add("container");
+                    container.classList.add("bg-light");
+                    container.classList.add("shadow-lg");
+                    container.classList.add("rounded");
+                    container.setAttribute("name","c");
+                    container.setAttribute("id","C"+idx);
+
+                    row = document.createElement('div');
+                    row.classList.add("row");
+
+                    col1 = document.createElement('div');
+                    col1.classList.add("col");
+
+                    h3 = document.createElement('h3');
+                    h3.innerText = chartTitle;
+
+                    col2 = document.createElement('div');
+                    col2.classList.add("col");
+                    col2.classList.add("float-right");
+
+                    button = document.createElement('button');
+                    button.classList.add("close");
+                    button.classList.add("p-1");
+                    button.type = "button";
+                    button.setAttribute("name","closeAlert");
+                    button.setAttribute("data-dismiss","alert");
+                    button.setAttribute("aria-expanded","true");
+                    button.setAttribute("onclick","HideDiv(this)");
+                    button.setAttribute("data-target","#C"+idx);
+
+                    i = document.createElement('i');
+                    i.classList.add("far");
+                    i.classList.add("fa-times-circle");
+
+                    button.appendChild(i);
+                    col2.appendChild(button);
+                    col1.appendChild(h3);
+
+                    row.appendChild(col1);
+                    row.appendChild(col2);
+
+                    cvs = document.createElement("canvas");
+                    cvs.classList.add("canvas");
+                    cvs.classList.add("p-1");
+                    cvs.setAttribute("style","height:50vh; width:80vw;");
+                    cvs.setAttribute("id","canvas"+idx);
+
+                    container.appendChild(row);
+                    container.appendChild(cvs);
+
+                    br= document.createElement('br');
+
+                    mc = document.getElementById('mc');
+                    mc.appendChild(container);
+                    mc.appendChild(br);
+                }
+                
+                function addContainer(){
+                    chooseContainer = document.getElementById("chooseContainer");
+                    chartTitle = chooseContainer.options[chooseContainer.selectedIndex].value;
+                    if(chartTitle != "-1")
+                    {   
+                        if(chTitle.findIndex(function(c){
+                            return c == chartTitle;
+                        }) == "-1")
+                        {
+                            chooseContainer.selectedIndex = -1;
+                            charts.push("C"+(charts.length+1));
+                            canvas.push("canvas"+(canvas.length+1));
+                            chTitle.push(chartTitle);
+                            localStorage.setItem("charts", JSON.stringify(charts));
+                            localStorage.setItem("canvas", JSON.stringify(canvas));
+                            localStorage.setItem("chartTitle", JSON.stringify(chTitle));
+
+                            chartContainerCreation(chartTitle,charts.length);
+                            canvasCreation("canvas"+(canvas.length),chartData[chooseContainer.selectedIndex]);
+                            location.reload();
+                        }
+                        else
+                        {
+                            alert('It is already on the page.'+chartTitle);
+                        }
+                    }
+                }
+                
+            </script>
+        {% endblock %}
+    </body>
+</html>

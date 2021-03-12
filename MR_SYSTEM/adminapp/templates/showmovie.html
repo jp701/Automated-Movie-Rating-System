@@ -1,0 +1,147 @@
+{% extends 'base_admin.html' %}
+<html>
+    <head></head>
+    <body>
+        {% block content %}
+        <br>
+        <div class="container w-75">
+            <br>
+            <form action="/administrator/updatemovie/" method="post" enctype="multipart/form-data">{% csrf_token %}
+            <div class="card">
+                <div class="card-header">
+                    {% if update %}
+                        <input type="text" class="form-control" name="name" value="{{movie.name}}">
+                    {% else %}
+                        {{movie.name}}
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <div class="row form-group justify-content-center">
+                        <div class="col col-lg-4 align-self-center">
+                            <img class="card-img-top" alt="No image is available" src="{{movie.image.url}}" style="width:250px;height:300px">
+                        </div>
+                        <div class="col col-lg-8 align-self-center">
+                            {% if update %}
+                                <input type="file" name="image" class="form-control-file" accept="image/png , image/jpeg">
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row form-group justify-content-center">
+                        <div class="col col-lg-4 align-self-center">
+                            <center>Released date</center>
+                        </div>
+                        <div class="col col-lg-8 align-self-center">
+                            {% if update %}
+                                <input type="date" class="form-control" name="releaseddate" value="{{movie.releasedDate}}">
+                            {% else %}
+                                {{movie.releasedDate}}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row form-group justify-content-center">
+                        <div class="col col-lg-4 align-self-center">
+                            <center>Production</center>
+                        </div>
+                        <div class="col col-lg-8 align-self-center">
+                            {% if update %}
+                                <input type="text" class="form-control" name="production" value="{{movie.production}}">
+                            {% else %}
+                                {{movie.production}}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row form-group justify-content-center">
+                        <div class="col col-lg-4 align-self-center">
+                            <center>Duration</center>
+                        </div>
+                        <div class="col col-lg-8 align-self-center">
+                            {% if update %}
+                                <input type="time" class="form-control" name="duration" value="{{movie.duration}}">
+                            {% else %}
+                                {{movie.duration}}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row form-group justify-content-center">
+                        <div class="col col-lg-4 align-self-center">
+                            <center>Plot</center>
+                        </div>
+                        <div class="col col-lg-8 align-self-center">
+                            {% if update %}
+                                <textarea class="form-control" name="plot" rows="3">
+                                    {{movie.plot}}
+                                </textarea>
+                            {% else %}
+                                <textarea class="form-control" name="plot" rows="3" readonly>
+                                    {{movie.plot}}
+                                </textarea>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row form-group justify-content-center">
+                        <div class="col col-lg-4 align-self-center">
+                            <center>Rating</center>
+                        </div>
+                        <div class="col col-lg-8 align-self-center">
+                            {{movie.rating}}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row justify-content-center">
+                        <div class="col col-lg-2 border">
+                            <a href="/administrator/showmovies/" class="btn btn-secondary w-100">
+                                <i class="fas fa-arrow-circle-left"></i> Back
+                            </a>
+                        </div>
+                        {% if update %}
+                            <div class="col col-lg-10 border">
+                                <input type="hidden" name="updateconfirm" value="{{movie.ID}}">
+                                <button type="submit" class="btn btn-success w-25" name="show_movie">
+                                    <i class="fas fa-pen-alt"></i> Update
+                                </button>
+                            </div>
+                        {% else %}
+                            <div class="col col-lg-5 border">
+                                <button type="button" class="btn btn-warning w-50" name="show_movie" onclick="window.location='/administrator/showmovie?update={{movie.ID}}'">
+                                    <i class="fas fa-edit"></i> Update Movie
+                                </button>
+                            </div>
+                            <div class="col col-lg-5 border">
+                                <button type="button" class="btn btn-danger w-50" id="delete_movie" data-toggle="modal" data-target="#deleteModal">
+                                    <i class="fas fa-minus-circle"></i> Delete Movie
+                                </button>
+                            </div>
+                        {% endif %}                        
+                    </div>
+                </div>
+            </div>
+            </form>
+        </div>
+        <div class="modal fade" id="deleteModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Confirmation of deletion</h4>
+                        <button type="button" class="close" data-dismis="modal" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <h5 id="modalBody">
+                            Are you sure want to delete {{movie.name}} movie ?
+                        </h5>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                        <form action="/administrator/deletemovie/" method="POST">{% csrf_token %}
+                            <input type="hidden" value="{{movie.ID}}" name="movieid">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-minus-circle"></i> Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>    
+        </div>
+        {% endblock %}
+    </body>
+</html>
