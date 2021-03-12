@@ -1,7 +1,7 @@
 from django.conf.urls import url
-from . import views
+from registerapp import views
 
-urlpatterns=[
-    #url(r'^loginhome/$',views.loginhome),
-    #url(r'^loginchecker/$',views.loginchecker),
+urlpatterns = [
+    url(r'^$',views.doreg),
+    url(r'^register/$',views.register),
 ]

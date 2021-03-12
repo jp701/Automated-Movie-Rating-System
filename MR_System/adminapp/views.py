@@ -5,19 +5,27 @@ from registerapp.models import Movie
 # Create your views here.
 import datetime
 import requests
+import json
 
 def admin_home(request):
-    c = {}
-    c.update(csrf(request))
-    #return HttpResponseRedirect('/admin/addmovie/')
-    return render(request,'admin_home.html',c)
+    #c = {}
+    #c.update(csrf(request))
+    l1=[60,60,60,60,60]
+    l2=[100,50,150,20,200]
+    l3=[10,20,30,40,50]
+    l=[l1,l2,l3]
+    l=json.dumps(l)
+    movielist = ['Overall','Movie1' , 'Movie2']
+    movielist = json.dumps(movielist)
+    #mlist = ["overall"]
+    return render(request,'admin_home.html',{'chartData':l,"movielist":movielist})
 
 def addmovie(request):
     name=request.POST.get('name','')
     releasedDate=request.POST.get('releaseddate','')
     production=request.POST.get('production','')
     duration=request.POST.get('duration','')
-    plot=request.POST.get('plot','')
+    plot=request.POST.get('plot')
     imagefile=request.FILES['image']
 
     new_movie = Movie(name=name,releasedDate=releasedDate,production=production,duration=duration,plot=plot,image=imagefile,rating=0)

@@ -2,6 +2,7 @@ from django.conf.urls import url
 from django.shortcuts import render
 from django.urls import path
 from . import views
+
 urlpatterns = [
     url(r'^admin_home/',views.admin_home),
     url(r'^add_movie/',views.addmovie),
