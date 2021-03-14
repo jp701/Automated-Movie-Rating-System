@@ -1,11 +1,11 @@
 from django.shortcuts import render
-from registerapp.models import User
+from userapp.models import User
 from django.template.context_processors import csrf
-from django.http import request
+from django.http import request,HttpResponseRedirect
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from django.core.mail import send_mail
-from django.http import HttpResponseRedirect,HttpResponse
+import random,string
 
 # Create your views here.
 user= None
@@ -23,18 +23,37 @@ def login(request):
     passwd = request.POST.get('pwd','')
     try:
         getuser = User.objects.get(email=email, password=passwd)
-        request.session["customer"]=getuser.ID
-        
-        return HttpResponseRedirect('/user/user_home_initial/')
+        request.session['user'] = getuser.ID
+        msg = "Login successful.."
+        return HttpResponseRedirect('/user/')
     except ObjectDoesNotExist:
+        if email=="admin@gmail.com" and passwd=='admin':
+            request.session["admin"] = "admin"
+            return HttpResponseRedirect('/administrator/')
         msg= "Incorrect email or password"
-        return render(request,'login.html',{'c':c, 'msg':msg})
+    return render(request,'login.html',{'c':c, 'msg':msg})
+
+def logout(request):
+    if 'user' in request.session:
+        del request.session['user']
+        request.session.modified=True
+        c={}
+        c.update(csrf(request))
+        msg='You are logged out, Please login again...'
+        return render(request,'login.html',{'c':c,'msg':msg})
+    else:
+        return HttpResponseRedirect('/login/')
 
 def forgotpass(request):
     c={}
     c.update(csrf(request))
     return render(request,'forgotpassword.html',c)
-    
+
+#import random,string to generate random character sequence
+def randomSequence(len):
+    seq =string.ascii_letters+ string.digits
+    return ''.join(random.choice(seq) for i in range(len))
+
 def testit(request):
     email=request.POST.get('email','')
     global user
@@ -44,7 +63,8 @@ def testit(request):
         subject='Please reset your password'
         email_from=settings.EMAIL_HOST_USER
         email_to=user.email
-        content='Click below link to reset your password\n'+'http://127.0.0.1:8000/login/gotoresetlink/'
+        randStr = randomSequence(10)
+        content='Click below link to reset your password\n'+'http://127.0.0.1:8000/login/gotoresetlink?seq='+randStr
         list=[]
         list.append(email_to)
         send_mail(subject,content,email_from,list)
@@ -52,12 +72,16 @@ def testit(request):
     else:
         return render(request,'forgotpassword.html',{'msg':'Sorry! Account doesn\'t exists, try another email address'})
 
-
+# Redirect back to login page if querystring parameter seq doesn't exist
 def gotoresetlink(request):
-    c={}
-    c.update(csrf(request))
-    global user
-    return render(request,'resetpassword.html',{'c':c,'user':user})
+    seq = request.GET.get('seq','')
+    if seq:
+        c={}
+        c.update(csrf(request))
+        global user
+        return render(request,'resetpassword.html',{'c':c,'user':user})
+    else:
+        return HttpResponseRedirect("/login/")
 
 def resetpassword(request):
     c={}

@@ -20,12 +20,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '30%137wrixoh4gx#gn%#3*7cmlv8v_660fmt(6fa5^=rz3-tqq'
+SECRET_KEY = '_(&4-&^gcykeh3&e)%dxvph9uo+zik*5ngp=$=7@w_3t$1srf7'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -38,13 +38,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'userapp.apps.UserappConfig',
-    'registerapp.apps.RegisterappConfig',
-    'loginapp.apps.LoginappConfig',
     'adminapp.apps.AdminappConfig',
+    'loginapp.apps.LoginappConfig',
+    'registerapp.apps.RegisterappConfig',
+    'crispy_forms',
     'mathfilters',
-    'crispy_forms'
 ]
-
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MIDDLEWARE = [
@@ -62,7 +61,7 @@ ROOT_URLCONF = 'MR_System.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR,'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -87,7 +86,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -129,9 +127,11 @@ STATIC_URL = '/static/'
 MEDIA_ROOT =  os.path.join(BASE_DIR, 'media') 
 MEDIA_URL = '/media/'
 
+#configurations for sending email
+
 EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST='smtp.gmail.com'
 EMAIL_USE_TLS= True
 EMAIL_PORT= 587
-EMAIL_HOST_USER='henapatel2000.data@gmail.com'
-EMAIL_HOST_PASSWORD='he14na12' #for app name 'django'
+EMAIL_HOST_USER='jinalpanchal041@gmail.com'
+EMAIL_HOST_PASSWORD='shgctyysjuxmgotp' #for app name 'django'

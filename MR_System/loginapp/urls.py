@@ -7,6 +7,7 @@ urlpatterns = [
     path('login.html',lambda request: render(request,'login.html')),
     url(r'^$',views.dologin),
     url(r'^login/$',views.login),
+    url(r'^logout/$',views.logout),
     url(r'^forgotpassword/$',views.forgotpass),
     url(r'^testit/$',views.testit),
     url(r'^gotoresetlink/$',views.gotoresetlink),

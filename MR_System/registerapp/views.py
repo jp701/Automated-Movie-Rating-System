@@ -1,13 +1,20 @@
 from django.shortcuts import render
 from django.template.context_processors import csrf
 from django.http import HttpResponseRedirect
-from registerapp.models import User
+from userapp.models import User,Movie
 
 # Create your views here.
-def doreg(request):
+def index(request):
     c={}
     c.update(csrf(request))
-    return render(request,'register.html',c)
+    movie = Movie.objects.all().order_by('-ID')[:5]
+    if movie.exists():
+        counts = movie.count()
+        count = []
+        for i in range(counts):
+            count.append(i)
+        return render(request,'index.html',{'c':c,'movie':movie,'count':count,'countlen':counts})
+    return render(request,'index.html',{'c':c})
 
 def register(request):
     uname = request.POST.get('username','')

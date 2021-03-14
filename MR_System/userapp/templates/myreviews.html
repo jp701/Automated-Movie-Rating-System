@@ -1,0 +1,91 @@
+{% extends 'base_user.html' %}
+{% block content %}
+
+{% load mathfilters %}
+<html>
+    <head>
+        <title>My Reviews</title>
+    </head>
+    <body>
+        <div class="container mt-5">
+            <h3>My Reviews</h3><br>
+            {% if msg %}
+                <div class="alert alert-danger alert-dismissible mx-auto w-50">
+                    <button class="close" data-dismiss="alert">&times;</button>
+                    <h4>{msg}}</h4>
+                </div>
+            {% endif %}
+            
+            
+            {% for review in reviews %}
+                
+                <div class="media">
+                    <img src="{{review.mid.image.url}}" alt="No Image" class="mr-3 mt-5 rounded" style="width:150px;height:150px;">
+                    <div class="media-body">
+                        <i class="fas fa-star" style="color:yellow;"></i> {{review.rating|add:0}} / 5 <br>
+                        
+                        <div class="dropdown">
+                            <button class="btn btn-default" data-toggle="dropdown" style="float:right;">
+                                <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                            </button>
+                            <div class="dropdown-menu">
+                                <button class="dropdown-item" data-toggle="modal" data-target="#up{{review.ID}}">Edit</button>
+                                <button class="dropdown-item" data-toggle="modal" data-target="#del{{review.ID}}">Delete</button>
+                            </div>
+                        </div>
+                        <h5> {{review.mid.name}}  <small><i>Reviewed on {{review.dateTime}}</i></small></h5>
+                        <p>{{review.reviewText}}</p>
+                    </div>
+                </div>
+                <hr>
+
+                <form action="/user/update_review/" method="POST"> {% csrf_token %}
+                    <div class="modal fade" id="up{{review.ID}}">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Edit Review</h4>
+                                    <button class="close" data-dismiss="modal">&times;</button>
+                                </div>
+                                <div class="modal-body">
+                                    <textarea name="new-rw" rows="4" class="w-100 rounded" placeholder="" required>{{review.reviewText}}</textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                                    <input type="hidden" name="id" value="{{review.ID}}">
+                                    <button type="submit" class="btn btn-success">Update</button> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>    
+
+                <div class="modal fade" id="del{{review.ID}}">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Delete Review </h4>
+                                    <button class="close" data-dismiss="modal">&times;</button>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure want to delete this review?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn btn-success" onclick="window.location='/user/delete_review?id={{review.ID}}'">Delete</button> 
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            {% endfor %}
+            
+            <!--<script>
+                function update(){
+                    $("#upModal").modal();
+                };
+            </script>-->
+        </div>
+    </body>
+</html>
+
+{% endblock %}
