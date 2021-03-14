@@ -8,18 +8,18 @@
         <br>
         <div class="container  rounded">
             {% if nomovie %}
+                <a data-toggle="modal" href="#notification_modal"></a>
                 <div class="modal fade" role="dialog" id="notification_modal">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <div class="modal-title">
-                                    <button class="close" data-dismiss="modal">&times;</button>
-                                </div>
+                                <h4 class="modal-title">Notification</h4>
+                                <button class="close" data-dismiss="modal">&times;</button>
                             </div>
-                            <div class="card-body">
-                                No movies are yet added...!!
+                            <div class="modal-body">
+                               <b>No movies are yet added...!!</b> 
                             </div>
-                            <div class="card-footer">
+                            <div class="modal-footer">
                                 <button class="btn btn-danger" data-dismiss="modal">Close</button>
                             </div>
                         </div>
@@ -27,7 +27,7 @@
                 </div>
             {% else %}
                 <div class="container w-100">
-                    <h4>All movies</h4>
+                    <h4 class="pt-2">All movies</h4>
                     {% for movie in movielist %}
                         {% if forloop.counter|mod:"3" == 1%}
                             <div class="row p-1">
@@ -59,4 +59,12 @@
                 </div>
             {% endif %}
         </div>
+
+        <script>
+                $(document).ready(function() {
+                    $('#notification_modal').modal({show:true}); 
+                });
+        </script>
         {% endblock %}
+    </body>
+</html>

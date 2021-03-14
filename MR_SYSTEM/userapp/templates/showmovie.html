@@ -9,7 +9,7 @@
             <br>
             <div class="card">
                 <div class="card-header">
-                    {{movie.name}}
+                    <h4 class="card-title">{{movie.name}}</h4>
                 </div>
                 <div class="card-body">
                     <div class="row form-group justify-content-center">
@@ -46,9 +46,7 @@
                                     <center>Plot</center>
                                 </div>
                                 <div class="col col-lg-8 align-self-center">
-                                    <textarea class="form-control" name="plot" rows="3" readonly>
-                                        {{movie.plot}}
-                                    </textarea>
+                                    <textarea class="form-control" name="plot" rows="4" readonly>{{movie.plot}}</textarea>
                                 </div>
                             </div>
                             <div class="row form-group justify-content-center">
@@ -61,34 +59,57 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row form-group ml-3"><h4><b>Reviews</b></h4></div>
+                    
                     <div class="row form-group ml-3">
+                            <div class="col col-lg-8">
+                                <h4><b>User Reviews</b></h4>
+                            </div>
+                                
+                            <div class="col col-lg-4 float-right">
+                                <b>Filter reviews: </b>
+                                <select id="star" name="star" onchange="sort()">
+                                    <option value="-1">Select All</option>
+                                    <option value="1">1 star</option>
+                                    <option value="2">2 star</option>
+                                    <option value="3">3 star</option>
+                                    <option value="4">4 star</option>
+                                    <option value="5">5 star</option>
+                                </select>
+                            </div>
+                    </div>
+
+                    <div class="row form-group mx-3">
                         {% if reviews %}
 
                             {% for review in reviews %}
                                 {% if review.uid.id == currentuserid %}
-                                    <div class="bg-light m-2 float-right">
+                                    <div class="bg-light m-2" style="float: right;">
                                         <i class="fas fa-star" style="color:yellow;"></i> {{review.rating|add:0}} / 5 <br>
                                         <span>
-                                            <h4>
+                                            <h5>
                                                 {{review.uid.name}} <small><i>Reviewed on {{review.dateTime}}</i></small>
-                                            </h4>
+                                            </h5>
                                         </span>
                                         <h6>{{review.reviewText}}</h6>
                                     </div>
                                 {% else %}
                                     <div class="bg-light m-2">
+                                        <i class="fas fa-star" style="color:yellow;"></i> {{review.rating|add:0}} / 5 <br>
                                         <span>
-                                            <h4>
+                                            <h5>
                                                 {{review.uid.name}} <small><i>Reviewed on {{review.dateTime}}</i></small>
-                                            </h4>
+                                            </h5>
                                         </span>
                                         <h6>{{review.reviewText}}</h6>
                                     </div>
                                 {% endif %}
                             {% endfor %}
                         {% endif %}
-                    </div>            
+                    </div>
+                    
+                    {% if added %}
+                        <a href="/user/reviews/" class="ml-3">Click here to see your reviews</a>
+                    {% else %}
                     <form action="/user/calculateRating/" method="post">{% csrf_token %}
                         <div class="input-group">
                             <input type="hidden" value="{{movie.ID}}" name="movieid">
@@ -100,19 +121,53 @@
                             </div>
                           </div>
                     </form>
+                    {% endif %}
+                    
                 </div>
                 <div class="card-footer">
                     <div class="row justify-content-center">
-                        <div class="col col-lg-2 border">
-                            <a href="/user/user_home/" class="btn btn-secondary w-100">
-                                <i class="fas fa-arrow-circle-left"></i> Back
-                            </a>
+                        <div class="col col-lg-3 border">
+                            {% if not mr %}
+                                <a href="/user/user_home/" class="btn btn-secondary w-100">
+                            {% else %}
+                                <a href="/user/reviews/" class="btn btn-secondary w-100">
+                            {% endif %}
+                                    <i class="fas fa-arrow-circle-left"></i> Back
+                                </a>
                         </div>                       
                     </div>
                 </div>
             </div>
             <br>
         </div>
+
+        <script type="text/javascript">
+
+            window.onload = function(){
+                const params = new URLSearchParams(location.search);
+                if(starval= params.get('star'))
+                {
+                    document.getElementById("star").selectedIndex = starval;
+                }
+            }
+
+            function sort(){
+                sortby= document.getElementById("star");
+                index = sortby.selectedIndex;
+                starval = sortby.options[index].value;
+                console.log("Rating: "+starval+"\tSelected index:"+index);
+                const params = new URLSearchParams(location.search);
+                if(params.get('m'))
+                    base_url = "/user/showmovie?movieid="+params.get('movieid')+"&m=True";
+                else
+                    base_url = "/user/showmovie?movieid="+params.get('movieid');
+                if(index)
+                    location.replace(base_url+"&star="+starval);
+                else
+                    location.replace(base_url);
+            }
+        </script>
         {% endblock %}
+
     </body>
 </html>

@@ -5,14 +5,24 @@
 <html>
     <head>
         <title>My Reviews</title>
+        <style>
+                @media only screen and (max-width: 600px) {
+                    .media {
+                        max-width: 100%;
+                        float:none;
+                    }
+                  }
+        </style>
     </head>
     <body>
         <div class="container mt-5">
-            <h3>My Reviews</h3><br>
+    
+            <h4 class="font-weight-bold pt-2">My Reviews</h4><br>
             {% if msg %}
-                <div class="alert alert-danger alert-dismissible mx-auto w-50">
+                <div class="alert alert-danger alert-dismissible fade show mx-auto w-50">
                     <button class="close" data-dismiss="alert">&times;</button>
-                    <h4>{msg}}</h4>
+                    <h4 class="alert-heading">No reviews available</h4>
+                    <p>{{msg}}</p>
                 </div>
             {% endif %}
             
@@ -20,10 +30,8 @@
             {% for review in reviews %}
                 
                 <div class="media">
-                    <img src="{{review.mid.image.url}}" alt="No Image" class="mr-3 mt-5 rounded" style="width:150px;height:150px;">
+                    <img src="{{review.mid.image.url}}" alt="No Image" class="mr-3 mt-2 rounded" style="width:150px;height:200px;">
                     <div class="media-body">
-                        <i class="fas fa-star" style="color:yellow;"></i> {{review.rating|add:0}} / 5 <br>
-                        
                         <div class="dropdown">
                             <button class="btn btn-default" data-toggle="dropdown" style="float:right;">
                                 <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
@@ -33,7 +41,11 @@
                                 <button class="dropdown-item" data-toggle="modal" data-target="#del{{review.ID}}">Delete</button>
                             </div>
                         </div>
-                        <h5> {{review.mid.name}}  <small><i>Reviewed on {{review.dateTime}}</i></small></h5>
+                        <i class="fas fa-star" style="color:yellow;"></i> {{review.rating|add:0}} / 5 <br>
+                        <h5> 
+                            <a href="/user/showmovie?movieid={{review.mid_id}}&m=True">{{review.mid.name}} </a>  
+                            <small><i>Reviewed on {{review.dateTime}}</i></small>
+                        </h5>
                         <p>{{review.reviewText}}</p>
                     </div>
                 </div>

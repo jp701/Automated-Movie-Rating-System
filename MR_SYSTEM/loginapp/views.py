@@ -29,7 +29,7 @@ def login(request):
     except ObjectDoesNotExist:
         if email=="admin@gmail.com" and passwd=='admin':
             request.session["admin"] = "admin"
-            return HttpResponseRedirect('/administrator/admin_home')
+            return HttpResponseRedirect('/administrator/')
         msg= "Incorrect email or password"
     return render(request,'login.html',{'c':c, 'msg':msg})
 

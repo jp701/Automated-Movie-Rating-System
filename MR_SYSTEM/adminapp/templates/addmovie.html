@@ -6,14 +6,14 @@
         {% block content %}
             <br><br>
             <div class="container w-50 border rounded">
-                {% if status %}
-                    <center><h2>{{status}} successfully......</h2></center>
-                {% endif %}
-                <br>
+                
                 <form action="/administrator/add_movie/" method="post" enctype="multipart/form-data">{% csrf_token %}
-                    <div class="row form-group justify-content-center">
+                    <div class="row form-group justify-content-center pt-2">
                             <h3>Add new amazing movie <i class="fas fa-film fa-1x"></i></h3>
                     </div>
+                    {% if status %}
+                        <center><h4>{{status}} successfully......</h4></center><br>
+                    {% endif %}
                     <div class="row form-group justify-content-center">
                         <div class="col col-lg-4 align-self-center">
                             <center>Name</center>

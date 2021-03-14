@@ -68,13 +68,9 @@
                         </div>
                         <div class="col col-lg-8 align-self-center">
                             {% if update %}
-                                <textarea class="form-control" name="plot" rows="3">
-                                    {{movie.plot}}
-                                </textarea>
+                                <textarea class="form-control" name="plot" rows="3">{{movie.plot}}</textarea>
                             {% else %}
-                                <textarea class="form-control" name="plot" rows="3" readonly>
-                                    {{movie.plot}}
-                                </textarea>
+                                <textarea class="form-control" name="plot" rows="3" readonly>{{movie.plot}}</textarea>
                             {% endif %}
                         </div>
                     </div>

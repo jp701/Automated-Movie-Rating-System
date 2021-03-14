@@ -10,7 +10,8 @@ urlpatterns = [
     url(r'^showmovie/$',views.showmovie),
     url(r'^updatemovie/$',views.updatemovie),
     url(r'^deletemovie/$',views.deletemovie),
+    url(r'^alogout/$',views.alogout),
     path('addmovie.html',lambda request: render(request,'addmovie.html')),
-    path('settings.html',lambda request: render(request,'settings.html')),
-    path('showmovie.html',lambda request: render(request,'showmovie.html'))
+    path('asettings.html',lambda request: render(request,'asettings.html')),
+    path('ashowmovie.html',lambda request: render(request,'ashowmovie.html'))
 ]

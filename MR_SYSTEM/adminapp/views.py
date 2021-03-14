@@ -7,15 +7,10 @@ import datetime
 import requests
 import json
 
+MAX_USER = 10
+
 def admin_home(request):
-    #c = {}
-    #c.update(csrf(request))
-    #l1=[60,60,60,60,60]
-    #l2=[100,50,150,20,200]
-    #l3=[10,20,30,40,50]
-    #datalist=[l1,l2,l3]
     datalist = []
-    #movielist = ['Overall','Movie1' , 'Movie2']
     movies = Movie.objects.all()
     movielist=[]
     for movie in movies:
@@ -36,6 +31,29 @@ def admin_home(request):
     movielist = json.dumps(movielist)
     datalist=json.dumps(datalist)
 
+    overallData = []
+    nreview = []
+    avrating = []
+    mname = []
+    movies = Movie.objects.filter()
+    for each in movies:
+        no_of_reviews = Review.objects.filter(mid=each).count()
+        no_of_reviews = (no_of_reviews*100)/MAX_USER
+        movie_name = each.name
+        avg_rating = each.rating
+        nreview.append(no_of_reviews)
+        avrating.append(avg_rating)
+        mname.append(movie_name)
+
+    nreview = json.dumps(nreview)
+    avrating = json.dumps(avrating)
+    mname = json.dumps(mname)
+    overallData.append(nreview)
+    overallData.append(avrating)
+    overallData.append(mname)
+    overallData = json.dumps(overallData)
+
+
     movie = Movie.objects.all().order_by("ID")
     review_1 = Review.objects.filter(rating=1,mid=movie[:1]).count()
     review_2 = Review.objects.filter(rating=2,mid=movie[:1]).count()
@@ -55,7 +73,7 @@ def admin_home(request):
     firstmoviename = json.dumps(firstmoviename)
     firstdatalist = json.dumps(firstdatalist)
     #mlist = ["overall"]
-    return render(request,'admin_home.html',{'chartData':datalist,"movielist":movielist,"firstmoviename":firstmoviename,"firstdatalist":firstdatalist})
+    return render(request,'admin_home.html',{'chartData':datalist,"movielist":movielist,"firstmoviename":firstmoviename,"firstdatalist":firstdatalist,'overallData':overallData})
 
 def alogout(request):
     try:
@@ -65,7 +83,7 @@ def alogout(request):
     return HttpResponseRedirect('/login')
 
 def addmovie(request):
-    if request.session == "admin":
+    if 'admin' in request.session:
         name=request.POST.get('name','')
         releasedDate=request.POST.get('releaseddate','')
         production=request.POST.get('production','')
@@ -80,7 +98,7 @@ def addmovie(request):
         return HttpResponseRedirect('/login')
 
 def showmovies(request):
-    if request.session == "admin":
+    if 'admin' in request.session:
         movies = Movie.objects.all()
         if movies.exists():
             return render(request,'showmovies.html',{'movielist':movies,'nomovie':False})
@@ -90,7 +108,7 @@ def showmovies(request):
         return HttpResponseRedirect('/login')
 
 def showmovie(request):
-    if request.session == "admin":
+    if 'admin' in request.session:
         update = False
         up = request.GET.get('update','')
         if up == "":
@@ -104,12 +122,12 @@ def showmovie(request):
             movie = Movie.objects.get(ID=up)
         movie.releasedDate = datetime.date.strftime(movie.releasedDate, "%Y-%m-%d")
         movie.duration = datetime.time.strftime(movie.duration,"%H:%M")
-        return render(request,'showmovie.html',{'movie':movie,'update':update})
+        return render(request,'ashowmovie.html',{'movie':movie,'update':update})
     else:
         return HttpResponseRedirect('/login')
 
 def updatemovie(request):
-    if request.session == "admin":
+    if 'admin' in request.session:
         id=request.POST.get('updateconfirm','')
 
         name=request.POST.get('name','')
@@ -136,12 +154,12 @@ def updatemovie(request):
         movie.releasedDate = datetime.date.strftime(movie.releasedDate, "%Y-%m-%d")
         movie.duration = datetime.time.strftime(movie.duration,"%H:%M")
         
-        return render(request,'showmovie.html',{'movie':movie,'update':False})
+        return render(request,'ashowmovie.html',{'movie':movie,'update':False})
     else:
         return HttpResponseRedirect('/login')
 
 def deletemovie(request):
-    if request.session == "admin":
+    if 'admin' in request.session:
         id = request.POST.get('movieid','')
         m= Movie.objects.filter(ID=id)
         if m.exists():

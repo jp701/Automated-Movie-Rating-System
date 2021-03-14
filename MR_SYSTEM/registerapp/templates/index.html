@@ -1,0 +1,125 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        
+        <!-- For ICONS -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+        <title>Home Page</title>
+        <style>
+            .navbar-custom { 
+                background-color:rgb(255,244,79);
+            }
+            .navbar-custom .collapse .navbar-nav .nav-item .nav-link,
+            .navbar-custom .nav-brand,
+            .navbar-custom .navbar-toggler .navbar-toggler-icon .fas{ 
+                color:rgb(8, 7, 61);
+            }
+            .carousel-indicators li{
+                background-color:rgb(8, 7, 61);
+            }
+            .carousel-control-prev span i,.carousel-control-next span i{
+                color:rgb(8, 7, 61);
+                font-size:1.8em;
+            }
+            .border-radius
+            {
+                border-radius: 200px;
+            }
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-custom shadow rounded">
+            <a class="nav-brand text-decoration-none mr-4" href="">
+                <i class="fab fa-meetup fa-2x"></i>
+                <span style="font-size: 1.5em;">Movie Rating</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon">
+                    <i class="fas fa-bars" style="font-size:1.5em;"></i>
+                </span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarText">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login"  style="font-size:1.2em;"><i class="fas fa-sign-in-alt"></i> Sign in</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/register.html"  style="font-size:1.2em"><i class="fas fa-registered"></i> Register</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#aboutus"  style="font-size:1.2em"><i class="fas fa-info-circle"></i> About us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contactus"  style="font-size:1.2em"><i class="fas fa-phone"></i> Contact us</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <br><br><br>
+        <center>
+        <div id="demo" class="carousel slide w-50 shadow-lg border-radius" data-ride="carousel">
+            <ul class="carousel-indicators">
+              {% if countlen < 5 %}
+                {% for i in count %}
+                    <li data-target="#demo" data-slide-to="{{forloop.counter}}"></li>    
+                {% endfor %}
+              {% else %}
+                <li data-target="#demo" data-slide-to="0" class="active"></li>
+                <li data-target="#demo" data-slide-to="1"></li>
+                <li data-target="#demo" data-slide-to="2"></li>
+                <li data-target="#demo" data-slide-to="3"></li>
+                <li data-target="#demo" data-slide-to="4"></li>
+              {% endif %}
+            </ul>
+            <div class="carousel-inner">
+                {% for m in movie %}
+                    {% if forloop.counter == 1 %}
+                        <div class="carousel-item active">
+                            <center>
+                            <br><br>
+                            <img src="{{m.image.url}}" alt="Los Angeles" width="200" height="300">
+                            <br><br><br><br>
+                            </center>
+                        </div>
+                    {% else %}
+                    <div class="carousel-item">
+                        <center>
+                            <br><br>
+                            <img src="{{m.image.url}}" alt="Chicago" width="200" height="300">
+                            <br><br><br><br>
+                        </center>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+                <a class="carousel-control-prev" href="#demo" data-slide="prev">
+                    <!--<span class="carousel-control-prev-icon"></span>-->
+                    <span><i class="fa fa-angle-left" aria-hidden="true"></i></span>
+                </a>
+                <a class="carousel-control-next" href="#demo" data-slide="next">
+                    <!--<span class="carousel-control-next-icon"></span>-->
+                    <span><i class="fa fa-angle-right" aria-hidden="true"></i></span>
+                </a>
+            </div>
+        </div>
+        </center>
+        <br><br><br>
+        <br><br><br><br><br><br><br><br><br>
+        <center>
+            <div id="aboutus" class="border-radius shadow-lg w-50">
+                <h3>About us</h3>
+            </div>
+        </center>
+        <br><br><br><br><br><br><br><br><br>
+        <center>
+            <div id="contactus" class="border-radius shadow-lg w-50">
+                <h3>Contact us</h3>
+            </div>
+        </center>
+        <br><br><br>
+    </body>
+</html>
