@@ -27,27 +27,28 @@
                 </div>
             {% else %}
                 <div class="container w-100">
-                    <h4 class="pt-2">All movies</h4>
+                    <h4 class="pt-3 font-weight-bold">All Movies</h4>
                     {% for movie in movielist %}
                         {% if forloop.counter|mod:"3" == 1%}
                             <div class="row p-1">
                         {% endif %}
                                 <div class="col col-lg-4">
-                                    <div class="card" style="width:350px;height:420px;">
+                                    <div class="card" style="width:310px;height:420px;">
                                         <div class="card-header bg-light">
-                                            <span style="font-size:1.5em;">{{movie.name}}</span>
+                                            <span style="font-size:1.3em;">{{movie.name}}</span>
                                         </div>
                                         <div class="card-body">
-                                            <img class="card-img-top imgThumbnail" alt="No image is available" src="{{movie.image.url}}"/>
+                                            <img class="card-img-top imgThumbnail" alt="No image available" src="{{movie.image.url}}"/><br>
+                                            <center><b>Rating:</b> {{movie.rating}} <i class="fas fa-star" style="color:orange;"></i></center>
                                         </div>
                                         <div class="card-footer">
                                             <center>
-                                            <form action="/administrator/showmovie/" method="post">{% csrf_token %}
-                                                <input type="hidden" name="movieid" value="{{movie.ID}}">
-                                                <button type="submit" class="btn btn-outline-primary btn-sm" name="show_movie">
+                                            <!--<form action="/administrator/showmovie/" method="post">{% csrf_token %}
+                                                <input type="hidden" name="movieid" value="{{movie.ID}}">-->
+                                                <button type="button" class="btn btn-outline-primary btn-sm" name="show_movie" onclick="window.location='/administrator/showmovie?movieid={{movie.ID}}'">
                                                     <i class="fas fa-info-circle"></i> More details
                                                 </button>
-                                            </form>
+                                            <!--</form>-->
                                             </center>
                                         </div>
                                     </div>

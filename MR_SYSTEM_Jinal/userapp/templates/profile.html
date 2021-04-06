@@ -34,8 +34,8 @@
 
                     <img class="rounded-circle card-img-top img" alt="No Profile" src="{{user.image.url}}">
                     <div class="card-body">
-    
-                        {% if id == 0 %}
+                        <!--id=0 means don't update profile, when update parameter(id) is not provided-->
+                        {% if id == 0 %} 
                             <h4 class="card-title font-weight-bold text-center">{{user.name}}</h4><br>
                             {% if user.bio %}
                                 <h6><i class="fas fa-info-circle"></i>  {{user.bio}}</h6> <hr>
@@ -55,9 +55,9 @@
                             </div>
                             <div class="input-group mb-3">
                                 {% if user.bio %}
-                                    <textarea name="bio" class="form-control" placeholder="Enter your bio here" rows="4">{{user.bio}}</textarea>
+                                    <textarea name="bio" class="form-control" placeholder="Enter something about yourself" rows="4">{{user.bio}}</textarea>
                                 {% else %}
-                                    <textarea name="bio" class="form-control" placeholder="Enter your bio here" rows="4"></textarea>
+                                    <textarea name="bio" class="form-control" placeholder="Enter something about yourself" rows="4"></textarea>
                                 {% endif %}
                             </div>
 

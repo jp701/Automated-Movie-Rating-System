@@ -57,7 +57,7 @@ def user_home(request):
             username = user.name
             movies = Movie.objects.all()
             if star != "":
-                movies = Movie.objects.filter(rating__range=(float(star)-1,float(star))).order_by('-rating')
+                movies = Movie.objects.filter(rating__range=(float(star)-0.9,float(star))).order_by('-rating')
                 filter = True
             if movies.exists():
                 return render(request,'user_home.html',{'movielist':movies,'nomovie':False,'filter':filter,'username':username})

@@ -12,7 +12,7 @@
                             <h3>Add new amazing movie <i class="fas fa-film fa-1x"></i></h3>
                     </div>
                     {% if status %}
-                        <center><h4>{{status}} successfully......</h4></center><br>
+                        <center><h4>{{status}} successfully......</h4></center>
                     {% endif %}
                     <div class="row form-group justify-content-center">
                         <div class="col col-lg-4 align-self-center">
@@ -24,7 +24,7 @@
                     </div>
                     <div class="row form-group justify-content-center">
                         <div class="col col-lg-4 align-self-center">
-                            <center>Released date</center>
+                            <center>Release date</center>
                         </div>
                         <div class="col col-lg-8 align-self-center">
                             <input type="date" class="form-control" name="releaseddate">
@@ -68,6 +68,9 @@
                         </div>
                     </div>
                 </form>
+                {% if status %}
+                    <center><a href="/administrator/showmovie?movieid={{mid}}" class="mx-auto p-2">Click here to see movie details</a></center>
+                {% endif %}
             </div>
         {% endblock %}
     </body>

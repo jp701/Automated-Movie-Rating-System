@@ -1,13 +1,14 @@
 from django.shortcuts import render
 from django.template.context_processors import csrf
 from django.http import HttpResponseRedirect , HttpResponse
-from userapp.models import Movie,Review
+from django.core.exceptions import ObjectDoesNotExist
+from userapp.models import Movie,Review,User
 # Create your views here.
 import datetime
 import requests
 import json
 
-MAX_USER = 10
+#MAX_USER = 10
 
 def admin_home(request):
     datalist = []
@@ -36,6 +37,7 @@ def admin_home(request):
     avrating = []
     mname = []
     movies = Movie.objects.filter()
+    MAX_USER = User.objects.all().count()
     for each in movies:
         no_of_reviews = Review.objects.filter(mid=each).count()
         no_of_reviews = (no_of_reviews*100)/MAX_USER
@@ -93,12 +95,13 @@ def addmovie(request):
 
         new_movie = Movie(name=name,releasedDate=releasedDate,production=production,duration=duration,plot=plot,image=imagefile,rating=0)
         new_movie.save()
-        return render(request,'addmovie.html',{'status':'Movie added'})
+        movie = Movie.objects.all().last()
+        return render(request,'addmovie.html',{'status':'Movie added','mid':movie.ID}) #to retrieve the latest movie added
     else:
         return HttpResponseRedirect('/login')
 
 def showmovies(request):
-    if 'admin' in request.session:
+    if 'admin' in request.session: 
         movies = Movie.objects.all()
         if movies.exists():
             return render(request,'showmovies.html',{'movielist':movies,'nomovie':False})
@@ -113,10 +116,13 @@ def showmovie(request):
         up = request.GET.get('update','')
         if up == "":
             update = False
-            id=request.POST.get('movieid','')
+            id=request.GET.get('movieid','')
             if id == "":
-                return HttpResponse("Not found Movieid")
-            movie = Movie.objects.get(ID=id)
+                return HttpResponse("Not Found Movieid")
+            try:
+                movie = Movie.objects.get(ID=id)
+            except ObjectDoesNotExist:
+                return HttpResponse("Not Found Movieid")
         else:
             update = True
             movie = Movie.objects.get(ID=up)

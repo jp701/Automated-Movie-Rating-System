@@ -12,6 +12,10 @@
                         float:none;
                     }
                   }
+            
+                  .show-read-more .more-text{
+                      display: none;
+                  }
         </style>
     </head>
     <body>
@@ -29,24 +33,37 @@
             
             {% for review in reviews %}
                 
-                <div class="media">
-                    <img src="{{review.mid.image.url}}" alt="No Image" class="mr-3 mt-2 rounded" style="width:150px;height:200px;">
-                    <div class="media-body">
-                        <div class="dropdown">
-                            <button class="btn btn-default" data-toggle="dropdown" style="float:right;">
-                                <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-                            </button>
-                            <div class="dropdown-menu">
-                                <button class="dropdown-item" data-toggle="modal" data-target="#up{{review.ID}}">Edit</button>
-                                <button class="dropdown-item" data-toggle="modal" data-target="#del{{review.ID}}">Delete</button>
+                <div class="media row">
+                    <div class="col-sm-2">
+                        <img src="{{review.mid.image.url}}" alt="No Image" class="mr-0 mt-0 rounded" style="width:150px;height:185px;">
+                    </div>
+                    <div class="col-sm-10">
+                        <div class="media-body">
+                            <div class="dropdown">
+                                <button class="btn btn-default" data-toggle="dropdown" style="float:right;">
+                                    <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <button class="dropdown-item" data-toggle="modal" data-target="#up{{review.ID}}">Edit</button>
+                                    <button class="dropdown-item" data-toggle="modal" data-target="#del{{review.ID}}">Delete</button>
+                                </div>
                             </div>
+                            <!--<i class="fas fa-star" style="color:yellow;"></i> {{review.rating|add:0}} / 5 <br>-->
+                            <!--{% with ''|center:5 as range %} this assigns center value(5) to string var range
+                                {% endwith %}-->
+                            {% for _ in range|center:5 %}
+                                {% if forloop.counter > review.rating %}
+                                    <i class="far fa-star" style="color:rgb(172, 168, 168);"></i>
+                                {% else %}
+                                    <i class="fas fa-star" style="color:orange;"></i>
+                                {% endif %}
+                            {% endfor %}
+                            <h5> 
+                                <a href="/user/showmovie?movieid={{review.mid_id}}&m=True">{{review.mid.name}} </a>  
+                                <small><i>Reviewed on {{review.dateTime}}</i></small>
+                            </h5>
+                            <p class="show-read-more mr-3">{{review.reviewText}}</p>
                         </div>
-                        <i class="fas fa-star" style="color:yellow;"></i> {{review.rating|add:0}} / 5 <br>
-                        <h5> 
-                            <a href="/user/showmovie?movieid={{review.mid_id}}&m=True">{{review.mid.name}} </a>  
-                            <small><i>Reviewed on {{review.dateTime}}</i></small>
-                        </h5>
-                        <p>{{review.reviewText}}</p>
                     </div>
                 </div>
                 <hr>
@@ -91,12 +108,58 @@
                 </div>
             {% endfor %}
             
-            <!--<script>
-                function update(){
-                    $("#upModal").modal();
-                };
-            </script>-->
         </div>
+        <script>
+            $(document).ready(function(){
+                var maxLength = 555;
+                var textResize;
+                 $(window).resize(function(){
+                     //window.location.reload();
+                     window.location = window.location.pathname; //for post request page reload
+                 });
+
+                $(".show-read-more").each(function(){
+
+                    windowSize = $(window).width(); 
+                    if( windowSize <= 576 ) //resize the review-text on small screens
+                        maxLength = 250;
+                    else
+                        maxLength = 555;
+
+                    var myStr = $(this).text();
+                    if($.trim(myStr).length > maxLength){
+                        var newStr = myStr.substring(0, maxLength);
+                        var removedStr = myStr.substring(maxLength, $.trim(myStr).length);
+                        $(this).empty().html(newStr);
+                        $(this).append('<span class="more-text">' + removedStr + '</span>');
+                        $(this).append('<a href="javascript:void(0);" class="read-more">...Read more</a>');
+                        
+                    }
+                });
+                
+                $(".read-more").click(function(){
+                    if($(this).text() == "...Read more"){
+                        $(this).siblings(".more-text").show();
+                        $(this).text("...Read less");
+                    }
+                    else
+                    {
+                        $(this).siblings(".more-text").hide();
+                        $(this).text("...Read more");
+                    }
+                });
+                /*$(".read-more").click(function(){
+                    $(this).siblings(".more-text").contents().unwrap();
+                    $(this).remove();
+                });
+                $(".more-text").click(function(){
+                    $(this).css("display","none");
+                });*/
+                
+            });
+
+                
+        </script>
     </body>
 </html>
 

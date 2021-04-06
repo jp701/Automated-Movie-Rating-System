@@ -1,14 +1,16 @@
 {% extends 'base_user.html' %}
 {% load mathfilters %}
+
+{% block content %}
 <html>
-       <!--<script src="bootstrap/jquery-3.5.1.slim.min.js"></script>
-        <script src="bootstrap/popper.min.js"></script><script src="bootstrap/bootstrap.min.js"></script>-->
+    <head>
+        <title>User Home</title>
+    </head>
     <body>
-        {% block content %}
             <br>
             <div class="container" height="40vw">
                 <br>
-                <center><h3>Welcome {{username}}</h3></center>
+                <center><h3 style="font-family:Sofia;">Welcome {{username}}</h3></center>
                 <br>
                 <div class="container rounded">
 
@@ -42,7 +44,7 @@
                                     <button class="close" data-dismiss="modal" onclick="$('.modal').hide();">&times;</button>
                                 </div>
                                 <div class="modal-body">
-                                    <b>No movies available...!!</b>
+                                    <b>No movies found...!!</b>
                                 </div>
                                 <div class="modal-footer">
                                     <button class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -63,8 +65,8 @@
                                                 <span style="font-size:1.3em;">{{movie.name}}</span>
                                             </div>
                                             <div class="card-body">
-                                                <img class="card-img-top imgThumbnail" alt="No image is available" src="{{movie.image.url}}"/><br>
-                                                <center><b>Rating:</b> {{movie.rating}} <i class="fas fa-star" style="color:yellow;"></i></center>
+                                                <img class="card-img-top imgThumbnail" alt="No image available" src="{{movie.image.url}}"/><br>
+                                                <center><b>Rating:</b> {{movie.rating}} <i class="fas fa-star" style="color:orange;"></i></center>
                                             </div>
                                             <div class="card-footer">
                                                 <center>
@@ -113,6 +115,7 @@
                     localStorage.setItem("text-color_user","#4C516D");
                 }
             </script>
-        {% endblock %}
+        
     </body>
 </html>
+{% endblock %}

@@ -30,11 +30,14 @@
                 </div>
                 <div class="form-group">
                     <label for="pwd">Password</label>
-                    <input type="password" class="form-control" id="pwd" name="password"  minlength="8" maxlength="12" placeholder="Enter password" required>
+                    <input type="password" class="form-control" id="pwd" name="password"  minlength="8" maxlength="12" placeholder="Enter password" title="Must be at least 8 characters & at most 12 characters." required>
                 </div>
                 <div class="form-group">
                   <label for="email">Email Id</label>
                   <input type="email" class="form-control" placeholder="Enter email-id" id="email" name="email" required>
+                </div>
+                <div class="font-weight-normal text-muted">
+                    <p>Make sure password uses at least 8 AND at most 12 characters.</p>
                 </div>
                 <button type="submit" class="btn btn-primary w-100">Register</button><br><br>
                 <center>Already registered? <a href="/login/">Sign In</a></center>
