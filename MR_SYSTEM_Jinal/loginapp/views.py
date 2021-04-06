@@ -23,9 +23,13 @@ def login(request):
     passwd = request.POST.get('pwd','')
     try:
         getuser = User.objects.get(email=email, password=passwd)
-        request.session['user'] = email
+        request.session['user'] = getuser.ID
         msg = "Login successful.."
+        return HttpResponseRedirect('/user/')
     except ObjectDoesNotExist:
+        if email=="admin@gmail.com" and passwd=='admin':
+            request.session["admin"] = "admin"
+            return HttpResponseRedirect('/administrator/')
         msg= "Incorrect email or password"
     return render(request,'login.html',{'c':c, 'msg':msg})
 

@@ -16,7 +16,7 @@
         </style>
     </head>
     <body bgcolor="">
-        <form action="/register/register/" method="POST">
+        <form action="/register/" method="POST">
             
             {% csrf_token %}
             <div class="container w-50 mt-5 rounded bg bg-light font-weight-bold border">
@@ -39,6 +39,8 @@
                 <button type="submit" class="btn btn-primary w-100">Register</button><br><br>
                 <center>Already registered? <a href="/login/">Sign In</a></center>
             </div>
+            <br>
+            <center><button class="btn btn-outline-primary" onclick="window.location='/'">Back to Home</button></center>
         </form>
     </body>
 </html>

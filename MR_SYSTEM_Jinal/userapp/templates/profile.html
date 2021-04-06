@@ -54,18 +54,13 @@
                                 <input type="email" name="email" class="form-control" value="{{user.email}}" readonly>
                             </div>
                             <div class="input-group mb-3">
-                                <textarea name="bio" class="form-control" placeholder="Enter your bio here" rows="4">{{user.bio}}</textarea>
+                                {% if user.bio %}
+                                    <textarea name="bio" class="form-control" placeholder="Enter your bio here" rows="4">{{user.bio}}</textarea>
+                                {% else %}
+                                    <textarea name="bio" class="form-control" placeholder="Enter your bio here" rows="4"></textarea>
+                                {% endif %}
                             </div>
-                            <!--<div class="input-group mb-3">
-                                <div class="custom-file w-100">
-                                    <div class="input-group-prepend">
-                                        <label for="image" class="input-group-text">
-                                            Change Profile..<i class="fas fa-camera"></i>
-                                        </label>
-                                    </div>
-                                    <input type="file" id="image" name="image">
-                                </div>
-                            </div>-->
+
                             <div class="input-group mb-3">
                                 <div class="custom-file">
                                     <input type="file" class="custom-file-input" name="image" id="customFile">
