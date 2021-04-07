@@ -1,8 +1,16 @@
 {% extends 'base_admin.html' %}
+
+{% block content %}
 <html>
-    <head></head>
+    <head>
+        <title>Movie Details</title>
+        <style>
+            .show-read-more .more-text{
+                display: none;
+            }
+        </style>
+    </head>
     <body>
-        {% block content %}
         <br>
         <div class="container w-75">
             <br>
@@ -82,18 +90,63 @@
                             {{movie.rating}}
                         </div>
                     </div>
+
+                    {% if not update %}
+                        <br>
+                        <div class="row form-group ml-2">
+                            <div class="col col-lg-8">
+                                <h4><b>User Reviews</b></h4>
+                            </div>
+                            
+                            <div class="col col-lg-4 float-right">
+                                <b>Filter reviews: </b>
+                                <select id="star" name="star" onchange="sort()">
+                                    <option value="-1">Select All</option>
+                                    <option value="1">1 star</option>
+                                    <option value="2">2 star</option>
+                                    <option value="3">3 star</option>
+                                    <option value="4">4 star</option>
+                                    <option value="5">5 star</option>
+                                </select>
+                            </div>
+                        </div>
+                    {% endif %}
+                    <div class="row form-group mx-3">
+                        {% if reviews %}
+
+                            {% for review in reviews %}
+                                <div class="bg-light m-2" style="float: right;">
+                                    <!--<i class="fas fa-star" style="color:yellow;"></i> {{review.rating|add:0}} / 5 <br>-->
+                                    {% for _ in range|center:5 %}
+                                        {% if forloop.counter > review.rating %}
+                                            <i class="far fa-star" style="color:rgb(172, 168, 168);"></i>
+                                        {% else %}
+                                            <i class="fas fa-star" style="color:orange;"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <span>
+                                        <h5>
+                                            {{review.uid.name}} <small><i>Reviewed on {{review.dateTime}}</i></small>
+                                        </h5>
+                                    </span>
+                                    <h6 class="show-read-more">{{review.reviewText}}</h6>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
                 </div>
                 <div class="card-footer">
                     <div class="row justify-content-center">
                         <div class="col col-lg-2 border">
                             {% if update %}
-                            <a href="/administrator/showmovie?movieid={{movie.ID}}" class="btn btn-secondary w-100">
+                                <a href="/administrator/showmovie?movieid={{movie.ID}}" class="btn btn-secondary w-100">
                             {% else %}
-                            <a href="/administrator/showmovies/" class="btn btn-secondary w-100">
+                                <a href="/administrator/showmovies/" class="btn btn-secondary w-100">
                             {% endif %}
                                 <i class="fas fa-arrow-circle-left"></i> Back
                             </a>
                         </div>
+
                         {% if update %}
                             <div class="col col-lg-10 border">
                                 <input type="hidden" name="updateconfirm" value="{{movie.ID}}">
@@ -126,9 +179,9 @@
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     </div>
                     <div class="modal-body">
-                        <h5 id="modalBody">
-                            Are you sure want to delete {{movie.name}} movie ?
-                        </h5>
+                        <h6 id="modalBody">
+                            Are you sure want to delete <b>{{movie.name}}</b> movie ?
+                        </h6>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Cancel</button>
@@ -142,6 +195,73 @@
                 </div>
             </div>    
         </div>
-        {% endblock %}
+
+        <script>
+
+            window.onload = function(){
+                const params = new URLSearchParams(location.search);
+                if(starval= params.get('star'))
+                {
+                    document.getElementById("star").selectedIndex = starval;
+                }
+            }
+
+            function sort(){
+                sortby= document.getElementById("star");
+                index = sortby.selectedIndex;
+                starval = sortby.options[index].value;
+                console.log("Rating: "+starval+"\tSelected index:"+index);
+              
+                const params = new URLSearchParams(location.search);
+                base_url = "/administrator/showmovie?movieid="+params.get('movieid');
+                if(index)
+                    location.replace(base_url+"&star="+starval);
+                else
+                    location.replace(base_url);
+            }
+
+            $(document).ready(function(){
+                var maxLength = 700;
+
+                 $(window).resize(function(){
+                     window.location.reload();
+                     //window.location = window.location.pathname; //for post request page reload
+                 });
+
+                $(".show-read-more").each(function(){
+
+                    windowSize = $(window).width(); 
+                    if( windowSize <= 576 ) //resize the review-text on small screens
+                        maxLength = 250;
+                    else
+                        maxLength = 700;
+
+                    var myStr = $(this).text();
+                    if($.trim(myStr).length > maxLength){
+                        var newStr = myStr.substring(0, maxLength);
+                        var removedStr = myStr.substring(maxLength, $.trim(myStr).length);
+                        $(this).empty().html(newStr);
+                        $(this).append('<span class="more-text">' + removedStr + '</span>');
+                        $(this).append('<a href="javascript:void(0);" class="read-more">...Read more</a>');
+                        
+                    }
+                });
+                
+                $(".read-more").click(function(){
+                    if($(this).text() == "...Read more"){
+                        $(this).siblings(".more-text").show();
+                        $(this).text("...Read less");
+                    }
+                    else
+                    {
+                        $(this).siblings(".more-text").hide();
+                        $(this).text("...Read more");
+                    }
+                });
+            });
+
+        </script>
+        
     </body>
 </html>
+{% endblock %}

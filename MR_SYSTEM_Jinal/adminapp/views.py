@@ -101,8 +101,11 @@ def addmovie(request):
         return HttpResponseRedirect('/login')
 
 def showmovies(request):
-    if 'admin' in request.session: 
-        movies = Movie.objects.all()
+    if 'admin' in request.session:
+        star= request.GET.get('star','') 
+        movies = Movie.objects.all().order_by('-ID')
+        if star != "":
+                movies = Movie.objects.filter(rating__range=(float(star)-0.9,float(star))).order_by('-rating')
         if movies.exists():
             return render(request,'showmovies.html',{'movielist':movies,'nomovie':False})
         else:
@@ -114,6 +117,9 @@ def showmovie(request):
     if 'admin' in request.session:
         update = False
         up = request.GET.get('update','')
+        sortby = request.GET.get('star','')
+        sortedReviews = None
+
         if up == "":
             update = False
             id=request.GET.get('movieid','')
@@ -123,12 +129,20 @@ def showmovie(request):
                 movie = Movie.objects.get(ID=id)
             except ObjectDoesNotExist:
                 return HttpResponse("Not Found Movieid")
+            if sortby != '':
+                reviews= Review.objects.filter(mid=id, rating= sortby)
+            else:
+                reviews = Review.objects.filter(mid=id)
+            sortedReviews = sorted(
+                reviews,
+                key=lambda x: x.dateTime, reverse=True
+            )
         else:
             update = True
             movie = Movie.objects.get(ID=up)
         movie.releasedDate = datetime.date.strftime(movie.releasedDate, "%Y-%m-%d")
         movie.duration = datetime.time.strftime(movie.duration,"%H:%M")
-        return render(request,'ashowmovie.html',{'movie':movie,'update':update})
+        return render(request,'ashowmovie.html',{'movie':movie,'update':update,'reviews':sortedReviews})
     else:
         return HttpResponseRedirect('/login')
 
@@ -144,7 +158,7 @@ def updatemovie(request):
 
         #m.update(name=name,releasedDate=releasedDate,production=production,duration=duration,plot=plot,image=imagefile)
 
-        m=Movie.objects.get(ID=id)
+        m= Movie.objects.get(ID=id)
         if len(request.FILES) != 0 :
             imagefile=request.FILES['image']
             m.image.delete(save=True)

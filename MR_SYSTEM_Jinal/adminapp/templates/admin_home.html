@@ -1,16 +1,21 @@
 {% extends 'base_admin.html' %}
+
+{% block content %}
 <html>
-       <!--<script src="bootstrap/jquery-3.5.1.slim.min.js"></script>
+    <head>
+        <title>Admin Home</title>
+        <!--<script src="bootstrap/jquery-3.5.1.slim.min.js"></script>
         <script src="bootstrap/popper.min.js"></script><script src="bootstrap/bootstrap.min.js"></script>-->
+    </head>
+    
     <body>
-        {% block content %}
             <br>
             <div class="container" height="40vw">
                 <br>
                 <center><h3>Welcome Admin</h3></center>
                 <br>                
                 <div>
-                    <select name="dropdown" id="chooseContainer" onchange="addContainer()">
+                    <select name="dropdown" class="ml-3" id="chooseContainer" onchange="addContainer()">
                         <option value="-1">----Select movies to be displayed----</option>
                     </select>
                 </div>
@@ -378,6 +383,7 @@
                 }
                 
             </script>
-        {% endblock %}
+       
     </body>
 </html>
+{% endblock %}

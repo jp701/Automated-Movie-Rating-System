@@ -50,19 +50,18 @@ def user_home(request):
     if "user" in request.session:
         cid = request.session["user"]
         star = request.GET.get('star','')
-        filter = False
+        
         user = User.objects.filter(ID=cid)
         if user.exists():
             user = User.objects.get(ID=cid)
             username = user.name
-            movies = Movie.objects.all()
+            movies = Movie.objects.all().order_by('-ID')
             if star != "":
                 movies = Movie.objects.filter(rating__range=(float(star)-0.9,float(star))).order_by('-rating')
-                filter = True
             if movies.exists():
-                return render(request,'user_home.html',{'movielist':movies,'nomovie':False,'filter':filter,'username':username})
+                return render(request,'user_home.html',{'movielist':movies,'nomovie':False,'username':username})
             else:
-                return render(request,'user_home.html',{'movielist':movies,'nomovie':True,'filter':filter,'username':username})
+                return render(request,'user_home.html',{'movielist':movies,'nomovie':True,'username':username})
     return HttpResponseRedirect('/login/')
 
 def calculateRating(request):
