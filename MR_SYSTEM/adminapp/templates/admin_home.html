@@ -1,0 +1,389 @@
+{% extends 'base_admin.html' %}
+
+{% block content %}
+<html>
+    <head>
+        <title>Admin Home</title>
+        <!--<script src="bootstrap/jquery-3.5.1.slim.min.js"></script>
+        <script src="bootstrap/popper.min.js"></script><script src="bootstrap/bootstrap.min.js"></script>-->
+    </head>
+    
+    <body>
+            <br>
+            <div class="container" height="40vw">
+                <br>
+                <center><h3>Welcome Admin</h3></center>
+                <br>                
+                <div>
+                    <select name="dropdown" class="ml-3" id="chooseContainer" onchange="addContainer()">
+                        <option value="-1">----Select movies to be displayed----</option>
+                    </select>
+                </div>
+                <br>
+                <div class="container" id="mc" height="40vw">
+                    <div class="container bg-white shadow-lg rounded" name="totalmovies" id="totalmovies">
+                        <canvas class="canvas p-1" style="height:60vh; width:80vw;" id="canvas_totalrating"></canvas>
+                    </div>
+                    <br>
+                </div>
+            </div>
+            <script>
+
+                var charts,canvas,chTitle;
+                var i,c,data,movielist;
+                var ctx, mychart,overallData;
+                
+                window.chartColors = {
+                    red: 'rgb(255, 99, 132)',
+                    //orange: 'rgb(255, 159, 64)',
+                    orange:'rgb(255,174,80)',
+                    yellow: 'rgb(255, 205, 86)',
+                    //green: 'rgb(75, 192, 192)',
+                    green:'rgb(51,242,70)',
+                    blue: 'rgb(54, 162, 235)',
+                    purple: 'rgb(153, 102, 255)',
+                    grey: 'rgb(201, 203, 207)',
+                  };
+                var config = {
+                    type: 'pie',
+                    data: {
+                        datasets: [{
+                            data: [
+                                60,60,60,60,60
+                            ],
+                            backgroundColor: [
+                                window.chartColors.red,
+                                window.chartColors.yellow,
+                                window.chartColors.blue,
+                                window.chartColors.purple,
+                                window.chartColors.green,
+                            ],
+                            label: 'Dataset 1'
+                        }],
+                        labels: [
+                            '1 Star',
+                            '2 Star',
+                            '3 Star',
+                            '4 Star',
+                            '5 Star',
+                        ]
+                    },
+                    options: {
+                        tooltips: {enabled: false},
+                        responsive: true
+                    }
+                };
+
+                //initial();          //Only run for the first time
+                window.onload =init;
+                function initial()
+                {
+                    charts = [];
+                    canvas = [];
+                    chTitle = [];
+                    localStorage.setItem("charts", JSON.stringify(charts));
+                    localStorage.setItem("canvas", JSON.stringify(canvas));
+                    localStorage.setItem("chartTitle",JSON.stringify(chTitle));
+
+                    localStorage.setItem("background-color","#FFA07A");
+                    localStorage.setItem("text-color","#800000");
+                }
+                function init()
+                {
+                    chartData = JSON.parse("{{chartData|escapejs}}");
+                    movielist = JSON.parse("{{movielist|escapejs}}");
+                    overallData = JSON.parse("{{overallData|escapejs}}");
+                    charts = JSON.parse(localStorage.getItem("charts"));
+                    canvas = JSON.parse(localStorage.getItem("canvas"));
+                    chTitle = JSON.parse(localStorage.getItem("chartTitle"));
+                    var temp1,temp2,temp3,temp4;
+                    //console.log("length: "+charts.length);
+                    //console.log("chartdata: "+chartData);
+                    //config.data.datasets[0].data = chartData[0];
+                    generateMenu(movielist);
+                    var j,idx;
+                    for(j=0;j<charts.length;j++)
+                    {
+                        temp1 = chTitle[j];
+                        console.log(temp1);
+                        temp2 = canvas[j];
+                        console.log(temp2);
+                        
+                        temp3 = charts[j];
+                        idx = temp3.substring(1);
+                        idx = parseInt(idx);
+
+                        temp4 = chartData[idx-1];
+                        console.log(temp4);
+                        chartContainerCreation(temp1,temp3,temp2);
+                        canvasCreation(temp2,temp4);
+                    }
+                    
+                    //console.log(overallData);
+                    overallData = generateDataobjects(overallData);
+                    //console.log(overallData);
+                    canvasScatterCreation("canvas_totalrating",overallData);
+                }
+                function generateMenu(mlist){
+                    var selectMenu = document.getElementById("chooseContainer");
+
+                    var i;
+                    for(i=0;i<mlist.length;i++)
+                    {
+                        var option = document.createElement('option');
+                        //console.log(mlist[i]);
+                        option.setAttribute("value",mlist[i]);
+                        option.innerText = mlist[i];
+                        selectMenu.appendChild(option);
+                    }
+                }
+                function generateDataobjects(overallData){
+                    var reviews = JSON.parse(overallData[0]);
+                    var rating = JSON.parse(overallData[1]);
+                    var name = JSON.parse(overallData[2]);
+                    var i,datalist=[];
+                    for(i=0;i<reviews.length;i++)
+                    {
+                        mydict = {x:reviews[i],y:rating[i],name:name[i]};
+                        //console.log(mydict);
+                        datalist.push(mydict);
+                    }
+                    return datalist;
+                }
+                function canvasScatterCreation(canvasId,datalist){
+                    var ctx = document.getElementById(canvasId).getContext('2d');
+
+                    var X_AXIS = "% of reviews based on maximum users";
+                    var Y_AXIS = "Average rating of movie";
+                    var SHOW_GRID = true;
+                    var POINT_X = 'reviews'; // column name for x values in data.csv
+                    var POINT_X_PREFIX = ''; // prefix for x values, eg '$'
+                    var POINT_X_POSTFIX = '%';// postfix for x values, eg '%'
+                    var POINT_Y = 'ratings'; // column name for x values in data.csv
+                    var POINT_Y_PREFIX = ''; // prefix for x values, eg '$'
+                    var POINT_Y_POSTFIX = '';// postfix for x values, eg '%'
+                    var POINT_NAME = 'district'; // point names that appear in tooltip
+                    var POINT_COLOR = 'rgba(0,0,128,0.7)'; // eg `black` or `rgba(10,100,44,0.8)`
+                    var POINT_RADIUS = 5; // radius of each data point
+
+                    var scatterChartData = {
+                        datasets: [{
+                            label: '',
+                            borderColor: window.chartColors.red,
+                            backgroundColor: 'rgb(255,204,203)',
+                            data: datalist,
+                            pointRadius: POINT_RADIUS,
+                            pointHoverRadius:  POINT_RADIUS + 2,
+                        }]
+                    };
+
+                    var myScatter = Chart.Scatter(ctx, {
+                        data: scatterChartData,
+                        options: {
+                            title: {
+                                display: true,
+                                text: 'Overall Rating',
+                                fontSize: 24,
+                            },
+                            scales: {
+                                xAxes: [{
+                                  scaleLabel: {
+                                    display: true,
+                                    labelString: X_AXIS
+                                  },
+                                  gridLines: {
+                                    display: SHOW_GRID,
+                                  },
+                                  ticks: {
+                                    callback: function(value, index, values) {
+                                      return POINT_X_PREFIX + value.toLocaleString() + POINT_X_POSTFIX;
+                                    }
+                                  }
+                                }],
+                                yAxes: [{
+                                  scaleLabel: {
+                                    display: true,
+                                    labelString: Y_AXIS
+                                  },
+                                  gridLines: {
+                                    display: SHOW_GRID,
+                                  },
+                                  ticks: {
+                                    callback: function(value, index, values) {
+                                      return POINT_Y_PREFIX + value.toLocaleString() + POINT_Y_POSTFIX;
+                                    }
+                                  }
+                                }]
+                            },
+                            tooltips: {
+                                displayColors: false,
+                                callbacks: {
+                                  title: function(tooltipItem, all) {
+                                    return [
+                                      all.datasets[tooltipItem[0].datasetIndex].data[tooltipItem[0].index].name,
+                                    ]
+                                  },
+                                  label: function(tooltipItem, all) {
+                                    return [
+                                      X_AXIS + ': ' + POINT_X_PREFIX + tooltipItem.xLabel.toLocaleString() + POINT_X_POSTFIX,
+                                      Y_AXIS + ': ' + POINT_Y_PREFIX + tooltipItem.yLabel.toLocaleString() + POINT_Y_POSTFIX
+                                    ]
+                                  }
+                                }
+                              }
+                        }
+                    });
+                }
+                function canvasCreation(canvasId,list)
+                {
+                    console.log("canvasCreation: "+canvasId)
+                    console.log(list);
+                    ctx = document.getElementById(canvasId).getContext('2d');
+                    //window.myPie = new Chart(ctx, config);
+                    mychart = new Chart(ctx, config);
+                    //console.log(list);
+                    mychart.data.datasets[0].data = list;
+                    //console.log(mychart);
+                    mychart.update('active');
+                    //console.log(mychart.data.datasets.data);
+                    /*mychart.render({
+                        duration: 800,
+                        lazy: false,
+                        easing: 'easeOutBounce'
+                    });*/
+                    mychart.render();
+                    //console.log(mychart);
+                    //config.data.datasets[0].data = list;
+                    //console.log(config);
+                }
+                function HideDiv(e) {
+                    var atr,idx;
+                    atr = e.getAttribute("data-target");    //Getting data-target means ID of chart container
+                    atr = atr.substring(1);                 //Removing first charcter #
+
+                    idx = charts.findIndex(e=> e == atr);
+                    console.log(idx);
+
+                    //console.log(atr);
+                    //console.log(idx);
+                    con = document.getElementById(atr);       //Getting reference to main chart container
+                    while (con.firstChild) {
+                        con.removeChild(con.firstChild);
+                    }
+                    mc = document.getElementById("mc");
+                    mc.removeChild(con);
+                    /*localStorage.setItem(atr,"none");
+                    c.style.display = localStorage.getItem(atr);*/    //Set its display property to None
+
+                    charts.splice(idx,1);
+                    canvas.splice(idx,1);
+                    chTitle.splice(idx,1);
+                    localStorage.setItem("charts", JSON.stringify(charts));
+                    localStorage.setItem("canvas", JSON.stringify(canvas));
+                    localStorage.setItem("chartTitle", JSON.stringify(chTitle));
+                    alert("You can add it from dropdown.");
+                 }
+            
+                var container,row,col1,h3,col2,button,cvs,i,br,mc,chooseContainer;
+                var newchartname;
+                function chartContainerCreation(chartTitle,chartId,canvasId){
+
+                    //console.log(idx);
+                    //console.log("chartContainerCreation: "+chartTitle);
+                    container = document.createElement('div');
+                    container.classList.add("container");
+                    container.classList.add("bg-white");
+                    container.classList.add("shadow-lg");
+                    container.classList.add("rounded");
+                    container.setAttribute("name","c");
+                    container.setAttribute("id",chartId);
+
+                    row = document.createElement('div');
+                    row.classList.add("row");
+
+                    col1 = document.createElement('div');
+                    col1.classList.add("col");
+
+                    h3 = document.createElement('h3');
+                    h3.innerText = chartTitle;
+
+                    col2 = document.createElement('div');
+                    col2.classList.add("col");
+                    col2.classList.add("float-right");
+
+                    button = document.createElement('button');
+                    button.classList.add("close");
+                    button.classList.add("p-1");
+                    button.type = "button";
+                    button.setAttribute("name","closeAlert");
+                    button.setAttribute("data-dismiss","alert");
+                    button.setAttribute("aria-expanded","true");
+                    button.setAttribute("onclick","HideDiv(this)");
+                    button.setAttribute("data-target","#"+chartId);
+
+                    i = document.createElement('i');
+                    i.classList.add("far");
+                    i.classList.add("fa-times-circle");
+
+                    button.appendChild(i);
+                    col2.appendChild(button);
+                    col1.appendChild(h3);
+
+                    row.appendChild(col1);
+                    row.appendChild(col2);
+
+                    cvs = document.createElement("canvas");
+                    cvs.classList.add("canvas");
+                    cvs.classList.add("p-1");
+                    cvs.setAttribute("style","height:50vh; width:80vw;");
+                    cvs.setAttribute("id",canvasId);
+
+                    container.appendChild(row);
+                    container.appendChild(cvs);
+
+                    br= document.createElement('br');
+
+                    mc = document.getElementById('mc');
+                    mc.appendChild(container);
+                    mc.appendChild(br);
+                }
+                
+                function addContainer(){
+                    chooseContainer = document.getElementById("chooseContainer");
+                    chartTitle = chooseContainer.options[chooseContainer.selectedIndex].value;
+                    console.log(chooseContainer.selectedIndex);
+                    var idx;
+                    if(chartTitle != "-1")
+                    {   
+                        //Checking for if it is already on page or not
+                        if(chTitle.findIndex(function(c){
+                            return c == chartTitle;
+                        }) == "-1")
+                        {
+                            charts.splice(chooseContainer.selectedIndex,0,"C"+chooseContainer.selectedIndex);
+                            canvas.splice(chooseContainer.selectedIndex,0,"canvas"+chooseContainer.selectedIndex);
+                            chTitle.splice(chooseContainer.selectedIndex,0,chartTitle);
+                            //charts.push("C"+(charts.length+1));
+                            //canvas.push("canvas"+(canvas.length+1));
+                            //chTitle.push(chartTitle);
+                            localStorage.setItem("charts", JSON.stringify(charts));
+                            localStorage.setItem("canvas", JSON.stringify(canvas));
+                            localStorage.setItem("chartTitle", JSON.stringify(chTitle));
+
+                            chartContainerCreation(chartTitle,"C"+chooseContainer.selectedIndex,"canvas"+chooseContainer.selectedIndex);
+                            canvasCreation("canvas"+chooseContainer.selectedIndex,chartData[chooseContainer.selectedIndex]);
+                            chooseContainer.selectedIndex = -1;
+                            location.reload();
+                        }
+                        else
+                        {
+                            alert('It is already on the page.'+chartTitle);
+                        }
+                    }
+                }
+                
+            </script>
+       
+    </body>
+</html>
+{% endblock %}

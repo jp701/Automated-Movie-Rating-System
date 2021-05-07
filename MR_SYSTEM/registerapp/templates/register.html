@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Register Yourself</title>
+        <style>
+            table{
+                margin-top: 50px;
+                align-content: center;
+                background-color: #d3d3d3;
+            }
+            table tr{
+                padding: 2em;
+            }
+        </style>
+    </head>
+    <body bgcolor="">
+        <form action="/register/" method="POST">
+            
+            {% csrf_token %}
+            <div class="container w-50 mt-5 rounded bg bg-light font-weight-bold border">
+                <h3 class="text-center pt-2">Registration Page</h3><br>
+                {% if msg %}
+                    <p class="text-center text-danger">{{msg}}</p>
+                {% endif %}
+                <div class="form-group">
+                    <label for="uname">User name</label>
+                    <input type="text" class="form-control" id="uname" name="username" placeholder="Enter your name" required>
+                </div>
+                <div class="form-group">
+                    <label for="pwd">Password</label>
+                    <input type="password" class="form-control" id="pwd" name="password"  minlength="8" maxlength="12" placeholder="Enter password" title="Must be at least 8 characters & at most 12 characters." required>
+                </div>
+                <div class="form-group">
+                  <label for="email">Email Id</label>
+                  <input type="email" class="form-control" placeholder="Enter email-id" id="email" name="email" required>
+                </div>
+                <div class="font-weight-normal text-muted">
+                    <p>Make sure password uses at least 8 AND at most 12 characters.</p>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Register</button><br><br>
+                <center>Already registered? <a href="/login/">Sign In</a></center>
+            </div>
+            <br>
+            <center><button class="btn btn-outline-primary" onclick="window.location='/'">Back to Home</button></center>
+        </form>
+    </body>
+</html>
+
+{% endblock %}

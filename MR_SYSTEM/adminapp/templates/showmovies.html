@@ -1,0 +1,113 @@
+{% extends 'base_admin.html' %}
+{% load mathfilters %}
+
+{% block content %}
+<html>
+    <head> 
+        <title>Show Movies</title>
+    </head>
+    <body>
+        <br>
+        <div class="container  rounded">
+
+                <div class="row form-group mx-2 pt-3">
+                        <div class="col col-lg-9">
+                            <h4><b>All Movies</b></h4>
+                        </div>
+                            
+                        <div class="col col-lg-3 float-right">
+                            <b>Filter movies: </b>
+                            <select id="star" name="star" onchange="sort()">
+                                <option value="-1">Select All</option>
+                                <option value="1">1 star</option>
+                                <option value="2">2 star</option>
+                                <option value="3">3 star</option>
+                                <option value="4">4 star</option>
+                                <option value="5">5 star</option>
+                            </select>
+                        </div>
+                    </div>
+
+                {% if nomovie %}
+                    <a data-toggle="modal" href="#notification_modal"></a>
+                    <div class="modal fade" id="notification_modal">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">
+                                        Notification
+                                    </h4>
+                                    <button class="close" data-dismiss="modal" onclick="$('.modal').hide();">&times;</button>
+                                </div>
+                                <div class="modal-body">
+                                    <b>No movies found...!!</b>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-danger" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            {% else %}
+                <div class="container w-100">
+                    {% for movie in movielist %}
+                        {% if forloop.counter|mod:"3" == 1%}
+                            <div class="row p-1">
+                        {% endif %}
+                                <div class="col col-lg-4">
+                                    <div class="card" style="width:310px;height:420px;">
+                                        <div class="card-header bg-light">
+                                            <span style="font-size:1.3em;">{{movie.name}}</span>
+                                        </div>
+                                        <div class="card-body">
+                                            <img class="card-img-top imgThumbnail" alt="No image available" src="{{movie.image.url}}"/><br>
+                                            <center><b>Rating:</b> {{movie.rating}} <i class="fas fa-star" style="color:orange;"></i></center>
+                                        </div>
+                                        <div class="card-footer">
+                                            <center>
+                                            <!--<form action="/administrator/showmovie/" method="post">{% csrf_token %}
+                                                <input type="hidden" name="movieid" value="{{movie.ID}}">-->
+                                                <button type="button" class="btn btn-outline-primary btn-sm" name="show_movie" onclick="window.location='/administrator/showmovie?movieid={{movie.ID}}'">
+                                                    <i class="fas fa-info-circle"></i> More details
+                                                </button>
+                                            <!--</form>-->
+                                            </center>
+                                        </div>
+                                    </div>
+                                </div>
+                        {% if forloop.counter|add:1|mod:"3" == 1%}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <script>
+                $(document).ready(function() {
+                    $('#notification_modal').modal({show:true}); 
+                });
+
+                window.onload = function(){
+                    const params = new URLSearchParams(location.search);
+                    if(starval= params.get('star'))
+                    {
+                        document.getElementById("star").selectedIndex = starval;
+                    }
+                }
+                function sort(){
+                    sortby= document.getElementById("star");
+                    index = sortby.selectedIndex;
+                    starval = sortby.options[index].value;
+                    console.log("Rating: "+starval+"\tSelected index:"+index);
+                    //window.location ="/user/user_home?star="+starval;
+                    if(index)
+                        location.replace("/administrator/showmovies?star="+starval);
+                    else
+                        location.replace("/administrator/showmovies/");
+                }
+        </script>
+        
+    </body>
+</html>
+{% endblock %}
