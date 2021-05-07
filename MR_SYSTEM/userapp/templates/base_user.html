@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <style>
+                .imgThumbnail
+                {
+                    height:250px;
+                    width:auto;
+                }
+                .navbar-custom { 
+                    background-color:rgb(137,207,240);
+                }
+                .navbar-custom .collapse .navbar-nav .nav-item .nav-link,
+                .navbar-custom .nav-brand,
+                .navbar-custom .navbar-toggler .navbar-toggler-icon .fas{ 
+                    color:rgb(76,81,1009);
+                }
+                .canvas
+                {
+                    font-family: 'Times New Roman', Times, serif;
+                    font-size: 1.2em;
+                }
+            </style>
+            <meta charset="utf-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1"/>
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+            <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>-->
+    
+            <!-- FOR CHRTS -->
+            <!--<script src="https://www.chartjs.org/dist/2.9.4/Chart.min.js"></script>
+            <script src="https://www.chartjs.org/samples/latest/utils.js"></script>-->
+
+        <!-- For ICONS -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+            <a class="nav-brand text-decoration-none mr-4" href="/user/user_home/">
+                <i class="fab fa-meetup fa-2x"></i>
+                <span style="font-size: 20px;">Movie Rating</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon">
+                    <i class="fas fa-bars" style="font-size:28px;"></i>
+                </span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarText">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/user/user_home/"><i class="fas fa-home"></i> Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/user/reviews/"><i class="fas fa-eye"></i> My Reviews</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/user/profile/"><i class="fas fa-user-alt"></i> Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/user/settings.html"><i class="fas fa-cog"></i> Settings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login/logout/"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        {% block content %}
+        {% endblock %}
+        <script>
+                setColorToCss();
+                function setColorToCss()
+                {
+                    var background = localStorage.getItem("background-color_user");
+                    var text = localStorage.getItem("text-color_user");
+    
+                    var navbar = document.querySelectorAll('.navbar-custom');
+                    var navlink = document.querySelectorAll('.nav-link');
+                    var navbrand = document.querySelectorAll('.nav-brand');
+                    var fas = document.getElementsByClassName('.navbar-toggler-icon .fas');
+                    var container = document.getElementsByClassName('container');
+                    var body = document.getElementsByTagName('body');
+    
+                    var i;
+                    for (i = 0; i < navbar.length; i++) {
+                        navbar[i].style.backgroundColor = background;
+                    }
+                    for (i = 0; i < navlink.length; i++) {
+                        navlink[i].style.color = text;
+                    }
+                    for (i = 0; i < navbrand.length; i++) {
+                        navbrand[i].style.color = text;
+                    }
+                    for (i = 0; i < fas.length; i++) {
+                        fas[i].style.color = text;
+                    }
+                    var h = background;
+                    var r = "0x" + h[1] + h[2];
+                    var g = "0x" + h[3] + h[4];
+                    var b = "0x" + h[5] + h[6];
+                    var a = 0.4;
+                    container[0].style.backgroundColor = "rgba(" + +r + "," + +g + "," + +b + "," + a + ")";
+                    body[0].style.color = text;
+                }
+            </script>
+    </body>
+</html>
